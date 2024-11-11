@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S1.SabaSports.OddsDirectAPI", "S1.SabaSports.OddsDirectAPI\S1.SabaSports.OddsDirectAPI.csproj", "{98FCDADD-758C-491B-A01C-19A641711274}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98FCDADD-758C-491B-A01C-19A641711274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98FCDADD-758C-491B-A01C-19A641711274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98FCDADD-758C-491B-A01C-19A641711274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98FCDADD-758C-491B-A01C-19A641711274}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A56C12E5-D1F8-420E-8FA1-9D82A5E6A2A6}
+	EndGlobalSection
+EndGlobal
