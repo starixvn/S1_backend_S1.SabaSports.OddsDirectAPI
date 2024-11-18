@@ -6,6 +6,8 @@ public class GetEventQuery
 
     public int[] BetType { get; set; }
 
+    public string LeagueIds { get; set; }
+
     public bool? IsLive { get; set; }
 
     public int Top { get; set; }

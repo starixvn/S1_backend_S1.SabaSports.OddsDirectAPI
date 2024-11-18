@@ -9,6 +9,8 @@ public class GetHighLightMatchRequest : IRequest<IEnumerable<Match>>
 
     public int[] SportType { get; set; }
 
+    public string LeagueIds { get; set; }
+
     public int[] Bettype { get; set; }
 
     public int Top { get; set; }

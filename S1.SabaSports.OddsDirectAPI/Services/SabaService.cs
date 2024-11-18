@@ -27,9 +27,9 @@ public class SabaService(IOptions<SabaSettings> options, IApiClient apiClient) :
     {
         var eventMarket = await GetEventAsync(request, token);
 
-        var sortedEvents = SortEvent(eventMarket.Events, request.SportType);
+        //var sortedEvents = SortEvent(eventMarket.Events, request.SportType);
 
-        return sortedEvents.Take(request.Top == 0 ? 100 : request.Top).Select(e => new Match
+        return eventMarket.Events.Take(request.Top == 0 ? 100 : request.Top).Select(e => new Match
         {
             SportType = e.SportType,
             SportName = e.SportName,
@@ -86,6 +86,7 @@ public class SabaService(IOptions<SabaSettings> options, IApiClient apiClient) :
         var queries = new List<string>()
         {
             request.IsLive is null ? string.Empty : $"islive eq {request.IsLive.ToString().ToLower()}",
+            request.LeagueIds is not null && request.LeagueIds.Any() ? $"leagueid in ({request.LeagueIds})" : string.Empty,
             request.SportType is not null && request.SportType.Any()
                 ? $"sporttype in ({string.Join(',', request.SportType)})"
                 : string.Empty

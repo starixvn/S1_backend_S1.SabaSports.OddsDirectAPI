@@ -27,7 +27,8 @@ public class SabaController(IMediator mediator) : ControllerBase
             From = query.From,
             To = query.To,
             VendorId = query.VendorId,
-            VendorMemberId = query.VendorMemberId
+            VendorMemberId = query.VendorMemberId,
+            LeagueIds = query.LeagueIds
         };
         return Ok(await mediator.Send(request).ConfigureAwait(false));
     }
