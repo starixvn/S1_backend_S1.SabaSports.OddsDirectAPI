@@ -48,7 +48,7 @@ public class SabaService(IOptions<SabaSettings> options, IApiClient apiClient) :
             ChannelCode = e.ChannelCode,
             TeamInfo = e.TeamInfo,
             GameInfo = e.GameInfo,
-            Markets = eventMarket.Markets.Where(m => m.EventId == e.EventId && m.MarketStatus == "running" && m.Selections.Any())
+            Markets = eventMarket.Markets.Where(m => m.EventId == e.EventId && request.Bettype.Contains(m.BetType) && m.MarketStatus == "running" && m.Selections.Any()).OrderBy(m => m.Sort)
         }).Where(m => m.Markets != null && m.Markets.Any());
     }
 
@@ -68,9 +68,6 @@ public class SabaService(IOptions<SabaSettings> options, IApiClient apiClient) :
 
     private string getMarketQuery(GetHighLightMatchRequest request)
     {
-        var betTypeQuery = request.Bettype is not null && request.Bettype.Any() ? $"bettype in ({string.Join(',', request.Bettype)})"
-            : string.Empty;
-
         var queries = new List<string>()
         {
             request.Bettype is not null && request.Bettype.Any() ? $"bettype in ({string.Join(',', request.Bettype)})"
