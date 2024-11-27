@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using S1.SabaSports.OddsDirectAPI.Attributes;
-using S1.SabaSports.OddsDirectAPI.Extensions;
 using S1.SabaSports.OddsDirectAPI.Queries;
 using S1.SabaSports.OddsDirectAPI.Requests;
 
@@ -16,11 +15,9 @@ public class SabaController(IMediator mediator) : ControllerBase
     [HttpGet("event")]
     public async Task<IActionResult> Get([FromQuery] GetEventQuery query)
     {
-        var brandId = HttpContext.Items.GetBrandId();
         var request = new GetHighLightMatchRequest
         {
             SportType = query.SportType,
-            BrandId = brandId,
             Bettype = query.BetType,
             IsLive = query.IsLive,
             Top = query.Top,

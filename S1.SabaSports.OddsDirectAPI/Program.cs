@@ -14,14 +14,11 @@ builder.Configuration.AddJsonFile("appsettings.json",
 builder.WebHost.UseSentry();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(SabaController).Assembly));
 builder.Services.Configure<SabaSettings>(builder.Configuration.GetSection("SABA"));
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IApiClient, ApiClient>();
 builder.Services.AddSingleton<ISabaService, SabaService>();
-builder.Services.AddMemoryCache();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(SabaController).Assembly));
 builder.Services.AddHealthChecks();
 builder.Services.AddCors();
 var excludeExtensions = new[] { "html", "ico", "png", "jpg" };
@@ -34,7 +31,6 @@ builder.Services
         .AddSource("Valhalla.*")
         .AddAspNetCoreInstrumentation(options => options.Filter =
             httpContext => !httpContext.Request.Path.HasValue
-                           || !httpContext.Request.Path.StartsWithSegments("/swagger")
                            && !httpContext.Request.Path.StartsWithSegments("/health")
                            && !httpContext.Request.Path.StartsWithSegments("/profiler/")
                            && !httpContext.Request.Path.StartsWithSegments("/metrics")
@@ -55,12 +51,6 @@ builder.Services
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseCors(x => x
     .AllowAnyMethod()
@@ -69,7 +59,6 @@ app.UseCors(x => x
     .AllowCredentials());
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
 
 app.MapHealthChecks("/health");
 

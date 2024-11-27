@@ -5,8 +5,6 @@ namespace S1.SabaSports.OddsDirectAPI.Requests;
 
 public class GetHighLightMatchRequest : IRequest<IEnumerable<Match>>
 {
-    public Guid BrandId { get; set; }
-
     public int[] SportType { get; set; }
 
     public string LeagueIds { get; set; }
