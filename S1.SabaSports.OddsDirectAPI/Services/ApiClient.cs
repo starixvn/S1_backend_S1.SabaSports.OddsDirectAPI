@@ -7,23 +7,22 @@ using System.Text.Json;
 
 namespace S1.SabaSports.OddsDirectAPI.Services;
 
-
 public interface IApiClient
 {
     Task<T> GetDataAsync<T>(string url, string token);
-
     Task<T> PostDataAsync<T>(string url, object data);
 }
+
 public class ApiClient : IApiClient
 {
-    private readonly HttpClient httpClient;
-    private HttpMessageHandler handler;
+    private readonly HttpClient _httpClient;
 
     public ApiClient(IOptions<SabaSettings> options)
     {
+        HttpMessageHandler handler;
         if (string.IsNullOrEmpty(options.Value.Proxy))
         {
-            handler = new HttpClientHandler()
+            handler = new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli,
             };
@@ -31,50 +30,41 @@ public class ApiClient : IApiClient
         else
         {
             var proxy = new WebProxy(options.Value.Proxy, true);
-            handler = new HttpClientHandler()
+            handler = new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli,
                 Proxy = proxy,
                 UseProxy = true,
             };
         }
-        httpClient = new HttpClient(handler);
+        _httpClient = new HttpClient(handler);
     }
+
     public async Task<T> GetDataAsync<T>(string url, string token)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         requestMessage.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
         requestMessage.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
         requestMessage.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
 
-        var response = await httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+        var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
-
-        var value = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return value!;
+        return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
 
     public async Task<T> PostDataAsync<T>(string url, object data)
     {
         var json = JsonSerializer.Serialize(data);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await httpClient.PostAsync(url, content);
+        var response = await _httpClient.PostAsync(url, content).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         var responseJson = await response.Content.ReadAsStringAsync();
-
-        var value = JsonSerializer.Deserialize<T>(responseJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return value!;
+        return JsonSerializer.Deserialize<T>(responseJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
 }

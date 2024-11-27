@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using S1.SabaSports.OddsDirectAPI.Constants;
 using S1.SabaSports.OddsDirectAPI.Models;
 using S1.SabaSports.OddsDirectAPI.Options;
 using S1.SabaSports.OddsDirectAPI.Requests;
@@ -27,9 +26,8 @@ public class SabaService(IOptions<SabaSettings> options, IApiClient apiClient) :
     {
         var eventMarket = await GetEventAsync(request, token);
 
-        //var sortedEvents = SortEvent(eventMarket.Events, request.SportType);
 
-        return eventMarket.Events.Take(request.Top == 0 ? 100 : request.Top).Select(e => new Match
+        return eventMarket.Events.Select(e => new Match
         {
             SportType = e.SportType,
             SportName = e.SportName,
@@ -92,28 +90,5 @@ public class SabaService(IOptions<SabaSettings> options, IApiClient apiClient) :
         var validQuery = queries.Where(q => !string.IsNullOrEmpty(q)).ToList();
 
         return validQuery.Any() ? $"query=$filter={string.Join(" and ", validQuery)}" : string.Empty;
-    }
-    private IEnumerable<Event> SortEvent(IEnumerable<Event> events, IEnumerable<int> sportType)
-    {
-        if (sportType is null || !sportType.Any())
-        {
-            return events;
-        }
-        var popularScores = sportType.Select(s =>
-        {
-            var exist = MatchPopularScore.PopularScores.TryGetValue(s, out var scores);
-            return exist ? scores : new Dictionary<string, double>();
-        }).SelectMany(dict => dict)
-            .ToLookup(pair => pair.Key, pair => pair.Value)
-            .ToDictionary(group => group.Key, group => group.First());
-
-        var averageScore = popularScores.Average(s => s.Value);
-        return events.OrderBy(e =>
-        {
-            var homeTeamPopularScore = popularScores.GetValueOrDefault($"{e.TeamInfo.HomeId}-{e.LeagueId}");
-            var awayTeamPopularScore = popularScores.GetValueOrDefault($"{e.TeamInfo.AwayId}-{e.LeagueId}");
-            var isLive = e.IsLive ? averageScore : 0;
-            return homeTeamPopularScore + awayTeamPopularScore + isLive;
-        });
     }
 }

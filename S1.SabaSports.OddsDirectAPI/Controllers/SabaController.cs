@@ -20,7 +20,6 @@ public class SabaController(IMediator mediator) : ControllerBase
             SportType = query.SportType,
             Bettype = query.BetType,
             IsLive = query.IsLive,
-            Top = query.Top,
             From = query.From,
             To = query.To,
             VendorId = query.VendorId,

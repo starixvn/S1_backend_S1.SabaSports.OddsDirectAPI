@@ -10,8 +10,6 @@ public class GetEventQuery
 
     public bool? IsLive { get; set; }
 
-    public int Top { get; set; }
-
     public string From { get; set; }
 
     public string To { get; set; }
