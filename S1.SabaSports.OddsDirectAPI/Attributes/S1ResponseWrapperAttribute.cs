@@ -14,7 +14,10 @@ public class S1ResponseWrapperAttribute : ActionFilterAttribute
         switch (context.Result)
         {
             case EmptyResult:
-                context.Result = new ObjectResult(new S1Response());
+                context.Result = new ObjectResult(new SuccessResponse<object>
+                {
+                    Data = default
+                });
                 break;
 
             case ObjectResult { Value: not S1Response and IEnumerable<object> ae } result:
